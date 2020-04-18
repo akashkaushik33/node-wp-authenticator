@@ -2,13 +2,13 @@ This repo is forked from Nightgunner5/node-wordpress-auth. Since The original pr
 
 TO INSTALL:
 ===========
-    npm install wp-authenticator
+    npm install wp-auth
 
 TO USE:
 =======
 In your init:
 
-    var wp_auth = require('wp-authenticator').create({
+    var wp_auth = require('wp-auth').create({
                           wpurl: 'http://my-blog.example',
                           logged_in_key: 'LOGGED_IN_KEY from wp-config.php',
                           logged_in_salt: 'LOGGED_IN_SALT from wp-config.php',
