@@ -7,6 +7,7 @@ TO INSTALL:
 TO USE:
 =======
 In your init:
+
     var wp_auth = require('wp-authenticator').create({
                           wpurl: 'http://my-blog.example',
                           logged_in_key: 'LOGGED_IN_KEY from wp-config.php',
