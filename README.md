@@ -1,4 +1,4 @@
-This repo is forked from Nightgunner5/node-wordpress-auth. Since The original project is not working on new node versions and is not maintained by the original author anymore I decided to update the code to make it work and publish a npm package based on that.
+This repo is forked from Nightgunner5/node-wordpress-auth. Since The original project is not working on new node versions and is not maintained by the original author anymore, So I decided to update the code to make it work and publish a npm package based on that.
 
 NPM package link: https://www.npmjs.com/package/wp-auth
 
