@@ -1,0 +1,34 @@
+{
+  "name": "wp-authenticator",
+  "version": "1.0.0",
+  "description": "Authenticate users through node using WordPress cookies",
+  "main": "wp-auth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akashkaushik33/node-wp-authenticator.git"
+  },
+  "keywords": [
+    "node",
+    "wordpress",
+    "cokkies",
+    "auth",
+    "authentication",
+    "node-wordpress",
+    "node-wp"
+  ],
+  "author": "Akash Kaushik <akashkaushik33@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/akashkaushik33/node-wp-authenticator/issues"
+  },
+  "homepage": "https://github.com/akashkaushik33/node-wp-authenticator#readme",
+  "engines": {
+    "node": ">=8.0"
+  },
+  "dependencies": {
+    "mysql2": "^2.1.0"
+  }
+}
