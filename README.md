@@ -17,6 +17,7 @@ In your init:
                           mysql_host: 'MySQL host',
                           mysql_user: 'MySQL username',
                           mysql_pass: 'MySQL password',
+			  mysql_port: 3306,
                           mysql_db: 'MySQL database',
                           wp_table_prefix: 'WordPress table prefix (eg. wp_)' });
 
