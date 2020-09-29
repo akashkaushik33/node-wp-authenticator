@@ -1,14 +1,16 @@
-This repo is forked from Nightgunner5/node-wordpress-auth. Since The original project is not working on new node versions and is not maintained by the original author anymore I decided to update the code to make it work and publish a npm package based on that.
+This repo is forked from Nightgunner5/node-wordpress-auth. Since The original project is not working on new node versions and is not maintained by the original author anymore, So I decided to update the code to make it work and publish a npm package based on that.
+
+NPM package link: https://www.npmjs.com/package/wp-auth
 
 TO INSTALL:
 ===========
-    npm install wp-authenticator
+    npm install wp-auth
 
 TO USE:
 =======
 In your init:
 
-    var wp_auth = require('wp-authenticator').create({
+    var wp_auth = require('wp-auth').create({
                           wpurl: 'http://my-blog.example',
                           logged_in_key: 'LOGGED_IN_KEY from wp-config.php',
                           logged_in_salt: 'LOGGED_IN_SALT from wp-config.php',
