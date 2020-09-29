@@ -1,9 +1,9 @@
-/* 
+/*
  * More info at: http://phpjs.org
- * 
+ *
  * This is version: 3.24
  * php.js is copyright 2011 Kevin van Zonneveld.
- * 
+ *
  * Portions copyright Brett Zamir (http://brett-zamir.me), Kevin van Zonneveld
  * (http://kevin.vanzonneveld.net), Onno Marsman, Theriault, Michael White
  * (http://getsprink.com), Waldo Malqui Silva, Paulo Freitas, Jonas Raoni
@@ -93,10 +93,10 @@
  * (http://www.ws3.es/), Cagri Ekin, Lorenzo Pisani, incidence, Amirouche, Jay
  * Klehr, Amir Habibi (http://www.residence-mixte.com/), Tony, booeyOH, meo,
  * William, Greenseed, Yen-Wei Liu, Ben Bryan, Leslie Hoare, mk.keck
- * 
+ *
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -104,10 +104,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -115,8 +115,7 @@
  * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- */ 
-
+ */
 
 // jslint.com configuration options. See: http://wiki.github.com/kvz/phpjs/jslint-options
 /* global window */
@@ -127,90 +126,91 @@
 // php.md5('test');
 
 exports.serialize = function (mixedValue) {
-  //  discuss at: https://locutus.io/php/serialize/
-  // original by: Arpad Ray (mailto:arpad@php.net)
-  // improved by: Dino
-  // improved by: Le Torbi (https://www.letorbi.de/)
-  // improved by: Kevin van Zonneveld (https://kvz.io/)
-  // bugfixed by: Andrej Pavlovic
-  // bugfixed by: Garagoth
-  // bugfixed by: Russell Walker (https://www.nbill.co.uk/)
-  // bugfixed by: Jamie Beck (https://www.terabit.ca/)
-  // bugfixed by: Kevin van Zonneveld (https://kvz.io/)
-  // bugfixed by: Ben (https://benblume.co.uk/)
-  // bugfixed by: Codestar (https://codestarlive.com/)
-  // bugfixed by: idjem (https://github.com/idjem)
-  //    input by: DtTvB (https://dt.in.th/2008-09-16.string-length-in-bytes.html)
-  //    input by: Martin (https://www.erlenwiese.de/)
-  //      note 1: We feel the main purpose of this function should be to ease
-  //      note 1: the transport of data between php & js
-  //      note 1: Aiming for PHP-compatibility, we have to translate objects to arrays
-  //   example 1: serialize(['Kevin', 'van', 'Zonneveld'])
-  //   returns 1: 'a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}'
-  //   example 2: serialize({firstName: 'Kevin', midName: 'van'})
-  //   returns 2: 'a:2:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";}'
-  //   example 3: serialize( {'ü': 'ü', '四': '四', '𠜎': '𠜎'})
-  //   returns 3: 'a:3:{s:2:"ü";s:2:"ü";s:3:"四";s:3:"四";s:4:"𠜎";s:4:"𠜎";}'
+	//  discuss at: https://locutus.io/php/serialize/
+	// original by: Arpad Ray (mailto:arpad@php.net)
+	// improved by: Dino
+	// improved by: Le Torbi (https://www.letorbi.de/)
+	// improved by: Kevin van Zonneveld (https://kvz.io/)
+	// bugfixed by: Andrej Pavlovic
+	// bugfixed by: Garagoth
+	// bugfixed by: Russell Walker (https://www.nbill.co.uk/)
+	// bugfixed by: Jamie Beck (https://www.terabit.ca/)
+	// bugfixed by: Kevin van Zonneveld (https://kvz.io/)
+	// bugfixed by: Ben (https://benblume.co.uk/)
+	// bugfixed by: Codestar (https://codestarlive.com/)
+	// bugfixed by: idjem (https://github.com/idjem)
+	//    input by: DtTvB (https://dt.in.th/2008-09-16.string-length-in-bytes.html)
+	//    input by: Martin (https://www.erlenwiese.de/)
+	//      note 1: We feel the main purpose of this function should be to ease
+	//      note 1: the transport of data between php & js
+	//      note 1: Aiming for PHP-compatibility, we have to translate objects to arrays
+	//   example 1: serialize(['Kevin', 'van', 'Zonneveld'])
+	//   returns 1: 'a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}'
+	//   example 2: serialize({firstName: 'Kevin', midName: 'van'})
+	//   returns 2: 'a:2:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";}'
+	//   example 3: serialize( {'ü': 'ü', '四': '四', '𠜎': '𠜎'})
+	//   returns 3: 'a:3:{s:2:"ü";s:2:"ü";s:3:"四";s:3:"四";s:4:"𠜎";s:4:"𠜎";}'
 
-  var val, key, okey
-  var ktype = ''
-  var vals = ''
-  var count = 0
+	var val, key, okey;
+	var ktype = '';
+	var vals = '';
+	var count = 0;
 
-  var _utf8Size = function (str) {
-    return ~-encodeURI(str).split(/%..|./).length
-  }
+	var _utf8Size = function (str) {
+		return ~-encodeURI(str).split(/%..|./).length;
+	};
 
-  var _getType = function (inp) {
-    var match
-    var key
-    var cons
-    var types
-    var type = typeof inp
+	var _getType = function (inp) {
+		var match;
+		var key;
+		var cons;
+		var types;
+		var type = typeof inp;
 
-    if (type === 'object' && !inp) {
-      return 'null'
-    }
+		if (type === 'object' && !inp) {
+			return 'null';
+		}
 
-    if (type === 'object') {
-      if (!inp.constructor) {
-        return 'object'
-      }
-      cons = inp.constructor.toString()
-      match = cons.match(/(\w+)\(/)
-      if (match) {
-        cons = match[1].toLowerCase()
-      }
-      types = ['boolean', 'number', 'string', 'array']
-      for (key in types) {
-        if (cons === types[key]) {
-          type = types[key]
-          break
-        }
-      }
-    }
-    return type
-  }
+		if (type === 'object') {
+			if (!inp.constructor) {
+				return 'object';
+			}
+			cons = inp.constructor.toString();
+			match = cons.match(/(\w+)\(/);
+			if (match) {
+				cons = match[1].toLowerCase();
+			}
+			types = ['boolean', 'number', 'string', 'array'];
+			for (key in types) {
+				if (cons === types[key]) {
+					type = types[key];
+					break;
+				}
+			}
+		}
+		return type;
+	};
 
-  var type = _getType(mixedValue)
+	var type = _getType(mixedValue);
 
-  switch (type) {
-    case 'function':
-      val = ''
-      break
-    case 'boolean':
-      val = 'b:' + (mixedValue ? '1' : '0')
-      break
-    case 'number':
-      val = (Math.round(mixedValue) === mixedValue ? 'i' : 'd') + ':' + mixedValue
-      break
-    case 'string':
-      val = 's:' + _utf8Size(mixedValue) + ':"' + mixedValue + '"'
-      break
-    case 'array':
-    case 'object':
-      val = 'a'
-      /*
+	switch (type) {
+		case 'function':
+			val = '';
+			break;
+		case 'boolean':
+			val = 'b:' + (mixedValue ? '1' : '0');
+			break;
+		case 'number':
+			val =
+				(Math.round(mixedValue) === mixedValue ? 'i' : 'd') + ':' + mixedValue;
+			break;
+		case 'string':
+			val = 's:' + _utf8Size(mixedValue) + ':"' + mixedValue + '"';
+			break;
+		case 'array':
+		case 'object':
+			val = 'a';
+			/*
       if (type === 'object') {
         var objname = mixedValue.constructor.toString().match(/(\w+)\(\)/);
         if (objname === undefined) {
@@ -221,428 +221,437 @@ exports.serialize = function (mixedValue) {
       }
       */
 
-      for (key in mixedValue) {
-        if (mixedValue.hasOwnProperty(key)) {
-          ktype = _getType(mixedValue[key])
-          if (ktype === 'function') {
-            continue
-          }
+			for (key in mixedValue) {
+				if (mixedValue.hasOwnProperty(key)) {
+					ktype = _getType(mixedValue[key]);
+					if (ktype === 'function') {
+						continue;
+					}
 
-          okey = (key.match(/^[0-9]+$/) ? parseInt(key, 10) : key)
-          vals += serialize(okey) + serialize(mixedValue[key])
-          count++
-        }
-      }
-      val += ':' + count + ':{' + vals + '}'
-      break
-    case 'undefined':
-    default:
-      // Fall-through
-      // if the JS object has a property which contains a null value,
-      // the string cannot be unserialized by PHP
-      val = 'N'
-      break
-  }
-  if (type !== 'object' && type !== 'array') {
-    val += ';'
-  }
+					okey = key.match(/^[0-9]+$/) ? parseInt(key, 10) : key;
+					vals += serialize(okey) + serialize(mixedValue[key]);
+					count++;
+				}
+			}
+			val += ':' + count + ':{' + vals + '}';
+			break;
+		case 'undefined':
+		default:
+			// Fall-through
+			// if the JS object has a property which contains a null value,
+			// the string cannot be unserialized by PHP
+			val = 'N';
+			break;
+	}
+	if (type !== 'object' && type !== 'array') {
+		val += ';';
+	}
 
-  return val
+	return val;
+};
+
+function initCache() {
+	const store = [];
+	// cache only first element, second is length to jump ahead for the parser
+	const cache = function cache(value) {
+		store.push(value[0]);
+		return value;
+	};
+
+	cache.get = (index) => {
+		if (index >= store.length) {
+			throw RangeError(`Can't resolve reference ${index + 1}`);
+		}
+
+		return store[index];
+	};
+
+	return cache;
 }
 
-function initCache () {
-  const store = []
-  // cache only first element, second is length to jump ahead for the parser
-  const cache = function cache (value) {
-    store.push(value[0])
-    return value
-  }
+function expectType(str, cache) {
+	const types = /^(?:N(?=;)|[bidsSaOCrR](?=:)|[^:]+(?=:))/g;
+	const type = (types.exec(str) || [])[0];
 
-  cache.get = (index) => {
-    if (index >= store.length) {
-      throw RangeError(`Can't resolve reference ${index + 1}`)
-    }
+	if (!type) {
+		throw SyntaxError('Invalid input: ' + str);
+	}
 
-    return store[index]
-  }
-
-  return cache
+	switch (type) {
+		case 'N':
+			return cache([null, 2]);
+		case 'b':
+			return cache(expectBool(str));
+		case 'i':
+			return cache(expectInt(str));
+		case 'd':
+			return cache(expectFloat(str));
+		case 's':
+			return cache(expectString(str));
+		case 'S':
+			return cache(expectEscapedString(str));
+		case 'a':
+			return expectArray(str, cache);
+		case 'O':
+			return expectObject(str, cache);
+		case 'C':
+			return expectClass(str, cache);
+		case 'r':
+		case 'R':
+			return expectReference(str, cache);
+		default:
+			throw SyntaxError(`Invalid or unsupported data type: ${type}`);
+	}
 }
 
-function expectType (str, cache) {
-  const types = /^(?:N(?=;)|[bidsSaOCrR](?=:)|[^:]+(?=:))/g
-  const type = (types.exec(str) || [])[0]
+function expectBool(str) {
+	const reBool = /^b:([01]);/;
+	const [match, boolMatch] = reBool.exec(str) || [];
 
-  if (!type) {
-    throw SyntaxError('Invalid input: ' + str)
-  }
+	if (!boolMatch) {
+		throw SyntaxError('Invalid bool value, expected 0 or 1');
+	}
 
-  switch (type) {
-    case 'N':
-      return cache([ null, 2 ])
-    case 'b':
-      return cache(expectBool(str))
-    case 'i':
-      return cache(expectInt(str))
-    case 'd':
-      return cache(expectFloat(str))
-    case 's':
-      return cache(expectString(str))
-    case 'S':
-      return cache(expectEscapedString(str))
-    case 'a':
-      return expectArray(str, cache)
-    case 'O':
-      return expectObject(str, cache)
-    case 'C':
-      return expectClass(str, cache)
-    case 'r':
-    case 'R':
-      return expectReference(str, cache)
-    default:
-      throw SyntaxError(`Invalid or unsupported data type: ${type}`)
-  }
+	return [boolMatch === '1', match.length];
 }
 
-function expectBool (str) {
-  const reBool = /^b:([01]);/
-  const [ match, boolMatch ] = reBool.exec(str) || []
+function expectInt(str) {
+	const reInt = /^i:([+-]?\d+);/;
+	const [match, intMatch] = reInt.exec(str) || [];
 
-  if (!boolMatch) {
-    throw SyntaxError('Invalid bool value, expected 0 or 1')
-  }
+	if (!intMatch) {
+		throw SyntaxError('Expected an integer value');
+	}
 
-  return [ boolMatch === '1', match.length ]
+	return [parseInt(intMatch, 10), match.length];
 }
 
-function expectInt (str) {
-  const reInt = /^i:([+-]?\d+);/
-  const [ match, intMatch ] = reInt.exec(str) || []
+function expectFloat(str) {
+	const reFloat = /^d:(NAN|-?INF|(?:\d+\.\d*|\d*\.\d+|\d+)(?:[eE][+-]\d+)?);/;
+	const [match, floatMatch] = reFloat.exec(str) || [];
 
-  if (!intMatch) {
-    throw SyntaxError('Expected an integer value')
-  }
+	if (!floatMatch) {
+		throw SyntaxError('Expected a float value');
+	}
 
-  return [ parseInt(intMatch, 10), match.length ]
+	let floatValue;
+
+	switch (floatMatch) {
+		case 'NAN':
+			floatValue = Number.NaN;
+			break;
+		case '-INF':
+			floatValue = Number.NEGATIVE_INFINITY;
+			break;
+		case 'INF':
+			floatValue = Number.POSITIVE_INFINITY;
+			break;
+		default:
+			floatValue = parseFloat(floatMatch);
+			break;
+	}
+
+	return [floatValue, match.length];
 }
 
-function expectFloat (str) {
-  const reFloat = /^d:(NAN|-?INF|(?:\d+\.\d*|\d*\.\d+|\d+)(?:[eE][+-]\d+)?);/
-  const [ match, floatMatch ] = reFloat.exec(str) || []
+function readBytes(str, len, escapedString = false) {
+	let bytes = 0;
+	let out = '';
+	let c = 0;
+	const strLen = str.length;
+	let wasHighSurrogate = false;
+	let escapedChars = 0;
 
-  if (!floatMatch) {
-    throw SyntaxError('Expected a float value')
-  }
+	while (bytes < len && c < strLen) {
+		let chr = str.charAt(c);
+		const code = chr.charCodeAt(0);
+		const isHighSurrogate = code >= 0xd800 && code <= 0xdbff;
+		const isLowSurrogate = code >= 0xdc00 && code <= 0xdfff;
 
-  let floatValue
+		if (escapedString && chr === '\\') {
+			chr = String.fromCharCode(parseInt(str.substr(c + 1, 2), 16));
+			escapedChars++;
 
-  switch (floatMatch) {
-    case 'NAN':
-      floatValue = Number.NaN
-      break
-    case '-INF':
-      floatValue = Number.NEGATIVE_INFINITY
-      break
-    case 'INF':
-      floatValue = Number.POSITIVE_INFINITY
-      break
-    default:
-      floatValue = parseFloat(floatMatch)
-      break
-  }
+			// each escaped sequence is 3 characters. Go 2 chars ahead.
+			// third character will be jumped over a few lines later
+			c += 2;
+		}
 
-  return [ floatValue, match.length ]
+		c++;
+
+		bytes +=
+			isHighSurrogate || (isLowSurrogate && wasHighSurrogate)
+				? // if high surrogate, count 2 bytes, as expectation is to be followed by low surrogate
+				  // if low surrogate preceded by high surrogate, add 2 bytes
+				  2
+				: code > 0x7ff
+				? // otherwise low surrogate falls into this part
+				  3
+				: code > 0x7f
+				? 2
+				: 1;
+
+		// if high surrogate is not followed by low surrogate, add 1 more byte
+		bytes += wasHighSurrogate && !isLowSurrogate ? 1 : 0;
+
+		out += chr;
+		wasHighSurrogate = isHighSurrogate;
+	}
+
+	return [out, bytes, escapedChars];
 }
 
-function readBytes (str, len, escapedString = false) {
-  let bytes = 0
-  let out = ''
-  let c = 0
-  const strLen = str.length
-  let wasHighSurrogate = false
-  let escapedChars = 0
+function expectString(str) {
+	// PHP strings consist of one-byte characters.
+	// JS uses 2 bytes with possible surrogate pairs.
+	// Serialized length of 2 is still 1 JS string character
+	const reStrLength = /^s:(\d+):"/g; // also match the opening " char
+	const [match, byteLenMatch] = reStrLength.exec(str) || [];
 
-  while (bytes < len && c < strLen) {
-    let chr = str.charAt(c)
-    const code = chr.charCodeAt(0)
-    const isHighSurrogate = code >= 0xd800 && code <= 0xdbff
-    const isLowSurrogate = code >= 0xdc00 && code <= 0xdfff
+	if (!match) {
+		throw SyntaxError('Expected a string value');
+	}
 
-    if (escapedString && chr === '\\') {
-      chr = String.fromCharCode(parseInt(str.substr(c + 1, 2), 16))
-      escapedChars++
+	const len = parseInt(byteLenMatch, 10);
 
-      // each escaped sequence is 3 characters. Go 2 chars ahead.
-      // third character will be jumped over a few lines later
-      c += 2
-    }
+	str = str.substr(match.length);
 
-    c++
+	let [strMatch, bytes] = readBytes(str, len);
 
-    bytes += isHighSurrogate || (isLowSurrogate && wasHighSurrogate)
-      // if high surrogate, count 2 bytes, as expectation is to be followed by low surrogate
-      // if low surrogate preceded by high surrogate, add 2 bytes
-      ? 2
-      : code > 0x7ff
-        // otherwise low surrogate falls into this part
-        ? 3
-        : code > 0x7f
-          ? 2
-          : 1
+	if (bytes !== len) {
+		throw SyntaxError(`Expected string of ${len} bytes, but got ${bytes}`);
+	}
 
-    // if high surrogate is not followed by low surrogate, add 1 more byte
-    bytes += wasHighSurrogate && !isLowSurrogate ? 1 : 0
+	str = str.substr(strMatch.length);
 
-    out += chr
-    wasHighSurrogate = isHighSurrogate
-  }
+	// strict parsing, match closing "; chars
+	if (!str.startsWith('";')) {
+		throw SyntaxError('Expected ";');
+	}
 
-  return [ out, bytes, escapedChars ]
+	return [strMatch, match.length + strMatch.length + 2]; // skip last ";
 }
 
-function expectString (str) {
-  // PHP strings consist of one-byte characters.
-  // JS uses 2 bytes with possible surrogate pairs.
-  // Serialized length of 2 is still 1 JS string character
-  const reStrLength = /^s:(\d+):"/g // also match the opening " char
-  const [ match, byteLenMatch ] = reStrLength.exec(str) || []
+function expectEscapedString(str) {
+	const reStrLength = /^S:(\d+):"/g; // also match the opening " char
+	const [match, strLenMatch] = reStrLength.exec(str) || [];
 
-  if (!match) {
-    throw SyntaxError('Expected a string value')
-  }
+	if (!match) {
+		throw SyntaxError('Expected an escaped string value');
+	}
 
-  const len = parseInt(byteLenMatch, 10)
+	const len = parseInt(strLenMatch, 10);
 
-  str = str.substr(match.length)
+	str = str.substr(match.length);
 
-  let [ strMatch, bytes ] = readBytes(str, len)
+	let [strMatch, bytes, escapedChars] = readBytes(str, len, true);
 
-  if (bytes !== len) {
-    throw SyntaxError(`Expected string of ${len} bytes, but got ${bytes}`)
-  }
+	if (bytes !== len) {
+		throw SyntaxError(
+			`Expected escaped string of ${len} bytes, but got ${bytes}`
+		);
+	}
 
-  str = str.substr(strMatch.length)
+	str = str.substr(strMatch.length + escapedChars * 2);
 
-  // strict parsing, match closing "; chars
-  if (!str.startsWith('";')) {
-    throw SyntaxError('Expected ";')
-  }
+	// strict parsing, match closing "; chars
+	if (!str.startsWith('";')) {
+		throw SyntaxError('Expected ";');
+	}
 
-  return [ strMatch, match.length + strMatch.length + 2 ] // skip last ";
+	return [strMatch, match.length + strMatch.length + 2]; // skip last ";
 }
 
-function expectEscapedString (str) {
-  const reStrLength = /^S:(\d+):"/g // also match the opening " char
-  const [ match, strLenMatch ] = reStrLength.exec(str) || []
+function expectKeyOrIndex(str) {
+	try {
+		return expectString(str);
+	} catch (err) {}
 
-  if (!match) {
-    throw SyntaxError('Expected an escaped string value')
-  }
+	try {
+		return expectEscapedString(str);
+	} catch (err) {}
 
-  const len = parseInt(strLenMatch, 10)
-
-  str = str.substr(match.length)
-
-  let [ strMatch, bytes, escapedChars ] = readBytes(str, len, true)
-
-  if (bytes !== len) {
-    throw SyntaxError(`Expected escaped string of ${len} bytes, but got ${bytes}`)
-  }
-
-  str = str.substr(strMatch.length + escapedChars * 2)
-
-  // strict parsing, match closing "; chars
-  if (!str.startsWith('";')) {
-    throw SyntaxError('Expected ";')
-  }
-
-  return [ strMatch, match.length + strMatch.length + 2 ] // skip last ";
+	try {
+		return expectInt(str);
+	} catch (err) {
+		throw SyntaxError('Expected key or index');
+	}
 }
 
-function expectKeyOrIndex (str) {
-  try {
-    return expectString(str)
-  } catch (err) {}
+function expectObject(str, cache) {
+	// O:<class name length>:"class name":<prop count>:{<props and values>}
+	// O:8:"stdClass":2:{s:3:"foo";s:3:"bar";s:3:"bar";s:3:"baz";}
+	const reObjectLiteral = /^O:(\d+):"([^"]+)":(\d+):\{/;
+	const [
+		objectLiteralBeginMatch /* classNameLengthMatch */,
+		,
+		className,
+		propCountMatch,
+	] = reObjectLiteral.exec(str) || [];
 
-  try {
-    return expectEscapedString(str)
-  } catch (err) {}
+	if (!objectLiteralBeginMatch) {
+		throw SyntaxError('Invalid input');
+	}
 
-  try {
-    return expectInt(str)
-  } catch (err) {
-    throw SyntaxError('Expected key or index')
-  }
+	if (className !== 'stdClass') {
+		throw SyntaxError(`Unsupported object type: ${className}`);
+	}
+
+	let totalOffset = objectLiteralBeginMatch.length;
+
+	const propCount = parseInt(propCountMatch, 10);
+	const obj = {};
+	cache([obj]);
+
+	str = str.substr(totalOffset);
+
+	for (let i = 0; i < propCount; i++) {
+		const prop = expectKeyOrIndex(str);
+		str = str.substr(prop[1]);
+		totalOffset += prop[1];
+
+		const value = expectType(str, cache);
+		str = str.substr(value[1]);
+		totalOffset += value[1];
+
+		obj[prop[0]] = value[0];
+	}
+
+	// strict parsing, expect } after object literal
+	if (str.charAt(0) !== '}') {
+		throw SyntaxError('Expected }');
+	}
+
+	return [obj, totalOffset + 1]; // skip final }
 }
 
-function expectObject (str, cache) {
-  // O:<class name length>:"class name":<prop count>:{<props and values>}
-  // O:8:"stdClass":2:{s:3:"foo";s:3:"bar";s:3:"bar";s:3:"baz";}
-  const reObjectLiteral = /^O:(\d+):"([^"]+)":(\d+):\{/
-  const [ objectLiteralBeginMatch, /* classNameLengthMatch */, className, propCountMatch ] = reObjectLiteral.exec(str) || []
-
-  if (!objectLiteralBeginMatch) {
-    throw SyntaxError('Invalid input')
-  }
-
-  if (className !== 'stdClass') {
-    throw SyntaxError(`Unsupported object type: ${className}`)
-  }
-
-  let totalOffset = objectLiteralBeginMatch.length
-
-  const propCount = parseInt(propCountMatch, 10)
-  const obj = {}
-  cache([obj])
-
-  str = str.substr(totalOffset)
-
-  for (let i = 0; i < propCount; i++) {
-    const prop = expectKeyOrIndex(str)
-    str = str.substr(prop[1])
-    totalOffset += prop[1]
-
-    const value = expectType(str, cache)
-    str = str.substr(value[1])
-    totalOffset += value[1]
-
-    obj[prop[0]] = value[0]
-  }
-
-  // strict parsing, expect } after object literal
-  if (str.charAt(0) !== '}') {
-    throw SyntaxError('Expected }')
-  }
-
-  return [ obj, totalOffset + 1 ] // skip final }
+function expectClass(str, cache) {
+	// can't be well supported, because requires calling eval (or similar)
+	// in order to call serialized constructor name
+	// which is unsafe
+	// or assume that constructor is defined in global scope
+	// but this is too much limiting
+	throw Error('Not yet implemented');
 }
 
-function expectClass (str, cache) {
-  // can't be well supported, because requires calling eval (or similar)
-  // in order to call serialized constructor name
-  // which is unsafe
-  // or assume that constructor is defined in global scope
-  // but this is too much limiting
-  throw Error('Not yet implemented')
+function expectReference(str, cache) {
+	const reRef = /^[rR]:([1-9]\d*);/;
+	const [match, refIndex] = reRef.exec(str) || [];
+
+	if (!match) {
+		throw SyntaxError('Expected reference value');
+	}
+
+	return [cache.get(parseInt(refIndex, 10) - 1), match.length];
 }
 
-function expectReference (str, cache) {
-  const reRef = /^[rR]:([1-9]\d*);/
-  const [ match, refIndex ] = reRef.exec(str) || []
+function expectArray(str, cache) {
+	const reArrayLength = /^a:(\d+):{/;
+	const [arrayLiteralBeginMatch, arrayLengthMatch] =
+		reArrayLength.exec(str) || [];
 
-  if (!match) {
-    throw SyntaxError('Expected reference value')
-  }
+	if (!arrayLengthMatch) {
+		throw SyntaxError('Expected array length annotation');
+	}
 
-  return [ cache.get(parseInt(refIndex, 10) - 1), match.length ]
+	str = str.substr(arrayLiteralBeginMatch.length);
+
+	const array = expectArrayItems(str, parseInt(arrayLengthMatch, 10), cache);
+
+	// strict parsing, expect closing } brace after array literal
+	if (str.charAt(array[1]) !== '}') {
+		throw SyntaxError('Expected }');
+	}
+
+	return [array[0], arrayLiteralBeginMatch.length + array[1] + 1]; // jump over }
 }
 
-function expectArray (str, cache) {
-  const reArrayLength = /^a:(\d+):{/
-  const [ arrayLiteralBeginMatch, arrayLengthMatch ] = reArrayLength.exec(str) || []
+function expectArrayItems(str, expectedItems = 0, cache) {
+	let key;
+	let hasStringKeys = false;
+	let item;
+	let totalOffset = 0;
+	let items = [];
+	cache([items]);
 
-  if (!arrayLengthMatch) {
-    throw SyntaxError('Expected array length annotation')
-  }
+	for (let i = 0; i < expectedItems; i++) {
+		key = expectKeyOrIndex(str);
 
-  str = str.substr(arrayLiteralBeginMatch.length)
+		// this is for backward compatibility with previous implementation
+		if (!hasStringKeys) {
+			hasStringKeys = typeof key[0] === 'string';
+		}
 
-  const array = expectArrayItems(str, parseInt(arrayLengthMatch, 10), cache)
+		str = str.substr(key[1]);
+		totalOffset += key[1];
 
-  // strict parsing, expect closing } brace after array literal
-  if (str.charAt(array[1]) !== '}') {
-    throw SyntaxError('Expected }')
-  }
+		// references are resolved immediately, so if duplicate key overwrites previous array index
+		// the old value is anyway resolved
+		// fixme: but next time the same reference should point to the new value
+		item = expectType(str, cache);
+		str = str.substr(item[1]);
+		totalOffset += item[1];
 
-  return [ array[0], arrayLiteralBeginMatch.length + array[1] + 1 ] // jump over }
-}
+		items[key[0]] = item[0];
+	}
 
-function expectArrayItems (str, expectedItems = 0, cache) {
-  let key
-  let hasStringKeys = false
-  let item
-  let totalOffset = 0
-  let items = []
-  cache([items])
+	// this is for backward compatibility with previous implementation
+	if (hasStringKeys) {
+		items = Object.assign({}, items);
+	}
 
-  for (let i = 0; i < expectedItems; i++) {
-    key = expectKeyOrIndex(str)
-
-    // this is for backward compatibility with previous implementation
-    if (!hasStringKeys) {
-      hasStringKeys = (typeof key[0] === 'string')
-    }
-
-    str = str.substr(key[1])
-    totalOffset += key[1]
-
-    // references are resolved immediately, so if duplicate key overwrites previous array index
-    // the old value is anyway resolved
-    // fixme: but next time the same reference should point to the new value
-    item = expectType(str, cache)
-    str = str.substr(item[1])
-    totalOffset += item[1]
-
-    items[key[0]] = item[0]
-  }
-
-  // this is for backward compatibility with previous implementation
-  if (hasStringKeys) {
-    items = Object.assign({}, items)
-  }
-
-  return [ items, totalOffset ]
+	return [items, totalOffset];
 }
 
 exports.unserialize = function (str) {
-  //       discuss at: https://locutus.io/php/unserialize/
-  //      original by: Arpad Ray (mailto:arpad@php.net)
-  //      improved by: Pedro Tainha (https://www.pedrotainha.com)
-  //      improved by: Kevin van Zonneveld (https://kvz.io)
-  //      improved by: Kevin van Zonneveld (https://kvz.io)
-  //      improved by: Chris
-  //      improved by: James
-  //      improved by: Le Torbi
-  //      improved by: Eli Skeggs
-  //      bugfixed by: dptr1988
-  //      bugfixed by: Kevin van Zonneveld (https://kvz.io)
-  //      bugfixed by: Brett Zamir (https://brett-zamir.me)
-  //      bugfixed by: philippsimon (https://github.com/philippsimon/)
-  //       revised by: d3x
-  //         input by: Brett Zamir (https://brett-zamir.me)
-  //         input by: Martin (https://www.erlenwiese.de/)
-  //         input by: kilops
-  //         input by: Jaroslaw Czarniak
-  //         input by: lovasoa (https://github.com/lovasoa/)
-  //      improved by: Rafał Kukawski
-  // reimplemented by: Rafał Kukawski
-  //           note 1: We feel the main purpose of this function should be
-  //           note 1: to ease the transport of data between php & js
-  //           note 1: Aiming for PHP-compatibility, we have to translate objects to arrays
-  //        example 1: unserialize('a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}')
-  //        returns 1: ['Kevin', 'van', 'Zonneveld']
-  //        example 2: unserialize('a:2:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";}')
-  //        returns 2: {firstName: 'Kevin', midName: 'van'}
-  //        example 3: unserialize('a:3:{s:2:"ü";s:2:"ü";s:3:"四";s:3:"四";s:4:"𠜎";s:4:"𠜎";}')
-  //        returns 3: {'ü': 'ü', '四': '四', '𠜎': '𠜎'}
-  //        example 4: unserialize(undefined)
-  //        returns 4: false
-  //        example 5: unserialize('O:8:"stdClass":1:{s:3:"foo";b:1;}')
-  //        returns 5: { foo: true }
-  //        example 6: unserialize('a:2:{i:0;N;i:1;s:0:"";}')
-  //        returns 6: [null, ""]
-  //        example 7: unserialize('S:7:"\\65\\73\\63\\61\\70\\65\\64";')
-  //        returns 7: 'escaped'
+	//       discuss at: https://locutus.io/php/unserialize/
+	//      original by: Arpad Ray (mailto:arpad@php.net)
+	//      improved by: Pedro Tainha (https://www.pedrotainha.com)
+	//      improved by: Kevin van Zonneveld (https://kvz.io)
+	//      improved by: Kevin van Zonneveld (https://kvz.io)
+	//      improved by: Chris
+	//      improved by: James
+	//      improved by: Le Torbi
+	//      improved by: Eli Skeggs
+	//      bugfixed by: dptr1988
+	//      bugfixed by: Kevin van Zonneveld (https://kvz.io)
+	//      bugfixed by: Brett Zamir (https://brett-zamir.me)
+	//      bugfixed by: philippsimon (https://github.com/philippsimon/)
+	//       revised by: d3x
+	//         input by: Brett Zamir (https://brett-zamir.me)
+	//         input by: Martin (https://www.erlenwiese.de/)
+	//         input by: kilops
+	//         input by: Jaroslaw Czarniak
+	//         input by: lovasoa (https://github.com/lovasoa/)
+	//      improved by: Rafał Kukawski
+	// reimplemented by: Rafał Kukawski
+	//           note 1: We feel the main purpose of this function should be
+	//           note 1: to ease the transport of data between php & js
+	//           note 1: Aiming for PHP-compatibility, we have to translate objects to arrays
+	//        example 1: unserialize('a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}')
+	//        returns 1: ['Kevin', 'van', 'Zonneveld']
+	//        example 2: unserialize('a:2:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";}')
+	//        returns 2: {firstName: 'Kevin', midName: 'van'}
+	//        example 3: unserialize('a:3:{s:2:"ü";s:2:"ü";s:3:"四";s:3:"四";s:4:"𠜎";s:4:"𠜎";}')
+	//        returns 3: {'ü': 'ü', '四': '四', '𠜎': '𠜎'}
+	//        example 4: unserialize(undefined)
+	//        returns 4: false
+	//        example 5: unserialize('O:8:"stdClass":1:{s:3:"foo";b:1;}')
+	//        returns 5: { foo: true }
+	//        example 6: unserialize('a:2:{i:0;N;i:1;s:0:"";}')
+	//        returns 6: [null, ""]
+	//        example 7: unserialize('S:7:"\\65\\73\\63\\61\\70\\65\\64";')
+	//        returns 7: 'escaped'
 
-  try {
-    if (typeof str !== 'string') {
-      return false
-    }
+	try {
+		if (typeof str !== 'string') {
+			return false;
+		}
 
-    return expectType(str, initCache())[0]
-  } catch (err) {
-    //Activate the console log for debug
-    //console.error(err)
-    return false
-  }
-}
+		return expectType(str, initCache())[0];
+	} catch (err) {
+		//Activate the console log for debug
+		//console.error(err)
+		return false;
+	}
+};
