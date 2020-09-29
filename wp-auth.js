@@ -71,6 +71,7 @@ WP_Auth.prototype.checkAuth = function( req ) {
 	if ( parseInt( data[1] ) < new Date / 1000 )
 		return new Invalid_Auth("expired cookie");
 
+	// console.log('Cookies data in cehck auth', data)
 	return new Valid_Auth( data, this );
 };
 
@@ -179,6 +180,7 @@ function Valid_Auth( data, auth ) {
 	}
 
 	function parse( pass_frag, id ) {
+		// console.log('Inside parse function', pass_frag, id)
 		var hmac1 = crypto.createHmac( 'md5', auth.salt );
         var key = user_login + '|' + pass_frag + '|' + expiration + '|' + token;
         hmac1.update(key);
@@ -186,6 +188,8 @@ function Valid_Auth( data, auth ) {
         var hmac2 = crypto.createHmac('sha256', hkey);
         hmac2.update(user_login + '|' + expiration + '|' + token);
         var cookieHash = hmac2.digest('hex');
+		// console.log('++++++++++++++++++++++++++ hash from wp config' , cookieHash)
+		// console.log('++++++++++++++++++++++++++++ hash from cookies', hash)
 		if ( hash == cookieHash ) {
 			self.emit( 'auth', true, id );
 		} else {
@@ -202,6 +206,7 @@ function Valid_Auth( data, auth ) {
 
 	var found = false;
 	auth.db.query( 'select ID, user_pass from ' + auth.table_prefix + 'users where user_login = \'' + user_login.replace( /(\'|\\)/g, '\\$1' ) + '\'', function( err, results ) {
+		// console.log('Query results', results, err)
 		const data = results && results[0] || ''
 		if (err || !data) {
 			auth.known_hashes[user_login] = {frag: '__fail__', id: 0};

@@ -1,6 +1,6 @@
 {
-  "name": "wp-authenticator",
-  "version": "1.0.0",
+  "name": "wp-auth",
+  "version": "1.0.1",
   "description": "Authenticate users through node using WordPress cookies",
   "main": "wp-auth.js",
   "scripts": {
