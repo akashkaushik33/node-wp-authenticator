@@ -30,13 +30,15 @@ function WP_Auth(
 	mysql_pass,
 	mysql_port,
 	mysql_db,
-	wp_table_prefix
+	wp_table_prefix,
+	skipAuthentication
 ) {
 	console.info('Inside WP AUTH');
 	var md5 = crypto.createHash('md5');
 	md5.update(wpurl);
 	this.cookiename = 'wordpress_logged_in_' + md5.digest('hex');
 	this.salt = logged_in_key + logged_in_salt;
+	this.skipAuthentication = !!skipAuthentication
 
 	// create the connection to database
 	this.db = require('mysql2').createConnection({
@@ -245,7 +247,8 @@ function Valid_Auth(data, auth) {
 		if (hash == cookieHash) {
 			self.emit('auth', true, id);
 		} else {
-			self.emit('auth', false, 0, 'invalid hash');
+			const userId = auth.skipAuthentication ? id : 0;
+			self.emit('auth', false, userId, 'invalid hash');
 		}
 	}
 
@@ -301,6 +304,7 @@ exports.create = function (config) {
 		mysql_port,
 		mysql_db,
 		wp_table_prefix,
+		skipAuthentication
 	} = config;
 	return new WP_Auth(
 		wpurl,
@@ -311,6 +315,7 @@ exports.create = function (config) {
 		mysql_pass,
 		mysql_port,
 		mysql_db,
-		wp_table_prefix
+		wp_table_prefix,
+		skipAuthentication
 	);
 };
