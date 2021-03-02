@@ -20,6 +20,7 @@ In your init:
 			              mysql_port: 'MySQL port (defaults to 3306)',
                           mysql_db: 'MySQL database',
                           wp_table_prefix: 'WordPress table prefix (eg. wp_)' });
+                          skipAuthentication: Boolean (send true to bypass hash checking and directly get values from SQL DB)
 
 When you get a HTTP request and you need to verify auth:
 
