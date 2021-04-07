@@ -125,6 +125,63 @@ WP_Auth.prototype.getUserMeta = function (id, key, callback) {
 	);
 };
 
+
+/**
+ * Function will return object of meta_keys paired with meta_value if found
+ * 
+ * @param {*} id  User ID
+ * @param {*} keys array of meta keys
+ * @param {*} callback 
+ * @returns 
+ */
+WP_Auth.prototype.getUserMetas = function (id, keys, callback) {
+	if (!(id in this.meta_cache_timeout)) this.meta_cache_timeout[id] = {};
+	if(!keys || !keys.length) return;
+	
+	// sanitizeValue inside values and make new key for cache based on given array
+	// or maybe cache per key is better?
+	let key = "";
+	keys = keys.map(k=> {
+		let rk =  "'" + sanitizeValue(k)+"'"
+		key = key + rk.substring(1,3)
+		return rk
+	})
+	key = key + '_' + keys.length
+	if (
+		key in this.meta_cache_timeout[id] &&
+		this.meta_cache_timeout[id][key] < +new Date()
+	) {
+		delete this.meta_cache[id][key];
+		delete this.meta_cache_timeout[id][key];
+	}
+
+	if (id in this.meta_cache && key in this.meta_cache[id]) {
+		callback(this.meta_cache[id][key]);
+		return;
+	}
+
+	const self = this;
+	this.db.query(
+		'select meta_value, meta_key from ' +
+			this.table_prefix +
+			"usermeta where meta_key IN (" + keys.join(', ') + ") and user_id = " +
+			parseInt(id),
+		function (err, results) {
+			const data = (results && results.length) ? results : {};
+			if (!(id in self.meta_cache)) self.meta_cache[id] = {};
+
+			self.meta_cache[id][key] = data.map(r => {
+				return {  [r.meta_key] : phpjs.unserialize(r.meta_value) || r.meta_value }
+			})
+
+			if (!(key in self.meta_cache[id])) self.meta_cache[id][key] = null;
+			self.meta_cache_timeout[id][key] = +new Date() + self.timeout;
+			callback(self.meta_cache[id][key]);
+		}
+	);
+};
+
+
 WP_Auth.prototype.setUserMeta = function (id, key, value) {
 	if (!(id in this.meta_cache_timeout)) this.meta_cache_timeout[id] = {};
 
