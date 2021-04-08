@@ -21,6 +21,8 @@ In your init:
                           mysql_db: 'MySQL database',
                           wp_table_prefix: 'WordPress table prefix (eg. wp_)' });
                           skipAuthentication: Boolean (send true to bypass hash checking and directly get values from SQL DB)
+                          debug: Boolean (send true to enable console logs)
+                          maxRetries: Number (Number of retries to connect to mysql if connection fails or some error occurs)
 
 When you get a HTTP request and you need to verify auth:
 
@@ -34,6 +36,13 @@ To get a usermeta value:
     wp_auth.getUserMeta( user_id, 'meta_key (eg. occupation)', function( data ) {
         // data is null if the user doesn't exist or doesn't have the key.
         // Otherwise, it is the value you would get in WordPress (unserialized intelligently)
+    } );
+
+To get multiple usermetas value at once:
+
+    wp_auth.getUserMetas( user_id, 'meta_keys (in array format e.g [ occupation, salary ])', function( data ) {
+        // data is null if the user doesn't exist or doesn't have the key.
+        // Otherwise, it is the value in array format : [ {occupation: occupationVal }, { salary: salaryVal } ]
     } );
 
 To set a usermeta value:
