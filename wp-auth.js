@@ -1,5 +1,6 @@
-var crypto = require('crypto'),
-	phpjs = require('./serialize');
+const crypto = require('crypto');
+const phpjs = require('./serialize');
+const mysql = require('mysql2');
 
 function sanitizeValue(value) {
 	switch (typeof value) {
@@ -31,30 +32,29 @@ function WP_Auth(
 	mysql_port,
 	mysql_db,
 	wp_table_prefix,
-	skipAuthentication
+	skipAuthentication,
+	debug,
+	maxRetries
 ) {
-	console.info('Inside WP AUTH');
 	var md5 = crypto.createHash('md5');
 	md5.update(wpurl);
 	this.cookiename = 'wordpress_logged_in_' + md5.digest('hex');
 	this.salt = logged_in_key + logged_in_salt;
+	this.debug = debug
 	this.skipAuthentication = !!skipAuthentication
 
-	// create the connection to database
-	this.db = require('mysql2').createConnection({
+	this.dbConfig = {
 		host: mysql_host,
 		user: mysql_user,
 		port: mysql_port,
 		password: mysql_pass,
 		database: mysql_db,
-	});
-	this.db.connect((err) => {
-		if (err) {
-			console.error('connection failed to mysql host:', mysql_host, err);
-			return;
-		}
-		console.info('connected to mysql host: ', mysql_host);
-	});
+	}
+	this.pingInterval = null
+	this.maxRetries = maxRetries || 5
+	this.retries = 0
+	// create the connection to database
+	this.connectDB(this.dbConfig);
 
 	this.table_prefix = wp_table_prefix;
 
@@ -66,6 +66,68 @@ function WP_Auth(
 	// Default cache time: 5 minutes
 	this.timeout = 300000;
 }
+
+
+WP_Auth.prototype.connectDB = function ( config ) {
+
+	this.debug && console.log('Starting connection with db config:: ', config);
+
+	if (this.db != null) {
+		this.debug && console.log('Destroying the old connection')
+		this.db && this.db.destroy && this.db.destroy();
+	}
+
+	this.db = mysql.createConnection({
+		...config
+	});
+
+	this.db.connect((err) => {
+		if (err) {
+			this.debug && console.error('connection failed to mysql host:', config.host, err);
+			return;
+		}
+		// resetting number of retries after connection has been established
+		this.retries = 0;
+		this.debug && console.info('connected to mysql host: ', config.host);
+	});
+
+	this.db.on('error', (err) => {
+		this.debug && console.log('Error has occured in connection with SQL:: ', err);
+		setTimeout((err) => {
+			this.handleError(err);
+		}, this.retries * 10000, err)
+	});
+
+	// start pinging right now because it will ping first after 1 hour, so by then coneection should be established
+	this.startPinging();
+
+}
+
+WP_Auth.prototype.handleError = function (err) {
+	// do something with error?
+	this.retries++;
+	this.debug && console.log('Reconnect tries:: ', this.retries);
+	if (this.retries <= this.maxRetries) {
+		this.debug && console.log('Reconecting...')
+		this.connectDB(this.dbConfig);
+		return;
+	}
+	this.debug && console.log('Max number of reconnection tries has been reached with the following error:: ', err);
+};
+
+WP_Auth.prototype.startPinging = function () {
+	// pinging every hour to keep connection alive
+	clearInterval(this.pingInterval);
+	this.pingInterval =  setInterval(() => {
+		this.db.ping((err) => {
+			if (err) {
+				this.debug && console.log("Ping Error::  ", err);
+				clearInterval(this.pingInterval);
+				this.handleError(err)
+			}
+		})
+	}, 3600000);
+};
 
 WP_Auth.prototype.checkAuth = function (req) {
 	var self = this,
@@ -82,7 +144,7 @@ WP_Auth.prototype.checkAuth = function (req) {
 	if (parseInt(data[1]) < new Date() / 1000)
 		return new Invalid_Auth('expired cookie');
 
-	// console.log('Cookies data in cehck auth', data)
+	this.debug && console.log('Cookies data in check auth:::: ', data)
 	return new Valid_Auth(data, this);
 };
 
@@ -184,6 +246,7 @@ WP_Auth.prototype.getUserMetas = function (id, keys, callback) {
 
 WP_Auth.prototype.setUserMeta = function (id, key, value) {
 	if (!(id in this.meta_cache_timeout)) this.meta_cache_timeout[id] = {};
+	if (!(id in this.meta_cache)) this.meta_cache[id] = {};
 
 	this.meta_cache[id][key] = value;
 	this.meta_cache_timeout[id][key] = +new Date() + this.timeout;
@@ -192,7 +255,7 @@ WP_Auth.prototype.setUserMeta = function (id, key, value) {
 
 	var self = this;
 	this.db.query(
-		'delete from' +
+		'delete from ' +
 			this.table_prefix +
 			"usermeta where meta_key = '" +
 			sanitizeValue(key) +
@@ -200,7 +263,7 @@ WP_Auth.prototype.setUserMeta = function (id, key, value) {
 			parseInt(id)
 	);
 	this.db.query(
-		'insert into' +
+		'insert into ' +
 			this.table_prefix +
 			"usermeta (meta_key, user_id, meta_value) VALUES('" +
 			sanitizeValue(key) +
@@ -300,8 +363,8 @@ function Valid_Auth(data, auth) {
 		var hmac2 = crypto.createHmac('sha256', hkey);
 		hmac2.update(user_login + '|' + expiration + '|' + token);
 		var cookieHash = hmac2.digest('hex');
-		// console.log('++++++++++++++++++++++++++ hash from wp config' , cookieHash)
-		// console.log('++++++++++++++++++++++++++++ hash from cookies', hash)
+		self.debug && console.log('++++++++++++++++++++++++++ hash from wp config::: ' , cookieHash)
+		self.debug && console.log('++++++++++++++++++++++++++++ hash from cookies::: ', hash)
 		if (hash == cookieHash) {
 			self.emit('auth', true, id);
 		} else {
@@ -362,7 +425,9 @@ exports.create = function (config) {
 		mysql_port,
 		mysql_db,
 		wp_table_prefix,
-		skipAuthentication
+		skipAuthentication,
+		debug,
+		maxRetries
 	} = config;
 	return new WP_Auth(
 		wpurl,
@@ -374,6 +439,8 @@ exports.create = function (config) {
 		mysql_port,
 		mysql_db,
 		wp_table_prefix,
-		skipAuthentication
+		skipAuthentication,
+		debug,
+		maxRetries
 	);
 };
