@@ -34,7 +34,8 @@ function WP_Auth(
 	wp_table_prefix,
 	skipAuthentication,
 	debug,
-	maxRetries
+	maxRetries,
+	cacheTimeout
 ) {
 	var md5 = crypto.createHash('md5');
 	md5.update(wpurl);
@@ -64,7 +65,7 @@ function WP_Auth(
 	this.meta_cache_timeout = {};
 
 	// Default cache time: 5 minutes
-	this.timeout = 300000;
+	this.timeout = cacheTimeout || 300000;
 }
 
 
@@ -427,7 +428,8 @@ exports.create = function (config) {
 		wp_table_prefix,
 		skipAuthentication,
 		debug,
-		maxRetries
+		maxRetries,
+		cacheTimeout
 	} = config;
 	return new WP_Auth(
 		wpurl,
@@ -441,6 +443,7 @@ exports.create = function (config) {
 		wp_table_prefix,
 		skipAuthentication,
 		debug,
-		maxRetries
+		maxRetries,
+		cacheTimeout
 	);
 };

@@ -22,7 +22,8 @@ In your init:
                           wp_table_prefix: 'WordPress table prefix (eg. wp_)' });
                           skipAuthentication: Boolean (send true to bypass hash checking and directly get values from SQL DB)
                           debug: Boolean (send true to enable console logs)
-                          maxRetries: Number (Number of retries to connect to mysql if connection fails or some error occurs)
+                          maxRetries: Number (Number of retries to connect to mysql if connection fails or some error occurs),
+                          cacheTimeout: time after which cache will be invalidated and fresh results will be fetched
 
 When you get a HTTP request and you need to verify auth:
 
