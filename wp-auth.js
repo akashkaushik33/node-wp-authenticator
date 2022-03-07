@@ -293,7 +293,7 @@ WP_Auth.prototype.reverseUserMeta = function (key, value, callback) {
 			"usermeta where meta_key = '" +
 			sanitizeValue(key) +
 			"' and meta_value = '" +
-			sanitizeValue(key) +
+			sanitizeValue(value) +
 			"'",
 		function (err, results) {
 			var data = (results && results[0]) || {};
